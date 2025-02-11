@@ -1,6 +1,10 @@
-package com.tus.trafficsimulator.models;
+package com.tus.trafficsimulator.persistence.entities;
 
-import java.util.UUID;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,6 +32,7 @@ import lombok.Setter;
  * <li>{@code isActivated} - Activation status of the network.</li>
  * </ul>
  */
+@Entity
 @Getter
 @Setter
 @AllArgsConstructor
@@ -35,11 +40,16 @@ import lombok.Setter;
 @Builder
 public class Network {
 
-    private UUID id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
+    @NotNull
     private String name;
 
+    @NotNull
     private String location;
 
-    private boolean isActivated;
+    @NotNull
+    private Boolean isActivated;
 }
