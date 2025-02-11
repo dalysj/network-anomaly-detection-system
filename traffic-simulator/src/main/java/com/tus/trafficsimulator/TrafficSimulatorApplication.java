@@ -1,19 +1,19 @@
-package com.tus;
+package com.tus.trafficsimulator;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * The AnomalyDetectorApplication class is the main class for the Anomaly
- * Detector application.
+ * The TrafficSimulatorApplication class is the main class for the Traffic
+ * Simulator application.
  * It is a Spring Boot application, and it uses the @SpringBootApplication
  * annotation to enable auto-configuration and component scanning.
  */
 @SpringBootApplication
-public class AnomalyDetectorApplication {
+public class TrafficSimulatorApplication {
 
     /**
-     * The main method serves as the entry point for the Anomaly Detector
+     * The main method serves as the entry point for the Traffic Simulator
      * application.
      * It uses Spring Boot's SpringApplication.run() method to launch the
      * application.
@@ -21,6 +21,6 @@ public class AnomalyDetectorApplication {
      * @param args Command line arguments passed to the application.
      */
     public static void main(String[] args) {
-        SpringApplication.run(AnomalyDetectorApplication.class, args);
+        SpringApplication.run(TrafficSimulatorApplication.class, args);
     }
 }
