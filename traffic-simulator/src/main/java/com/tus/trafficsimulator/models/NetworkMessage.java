@@ -39,7 +39,7 @@ public class NetworkMessage {
 
     private UUID id;
 
-    private UUID networkId;
+    private long networkId;
 
     private double sizeInBytes;
 
