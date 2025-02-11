@@ -1,0 +1,23 @@
+<configuration>
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <timestamp>
+                    <timeZone>UTC</timeZone>
+                </timestamp>
+                <pattern>
+                    <pattern>{"message":"{%msg}"}</pattern>
+                </pattern>
+                <loggerName />
+                <threadName />
+                <logLevel />
+            </providers>
+        </encoder>
+    </appender>
+    <root level="info">
+        <appender-ref ref="console" />
+    </root>
+    <logger name="com.tus.trafficsimulator" level="debug" additivity="false">
+        <appender-ref ref="console" />
+    </logger>
+</configuration>
