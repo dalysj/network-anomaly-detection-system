@@ -4,6 +4,7 @@ import com.tus.trafficsimulator.persistence.entities.Network;
 import com.tus.trafficsimulator.persistence.repositories.NetworkRepository;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import lombok.extern.slf4j.Slf4j;
@@ -40,6 +41,7 @@ public class NetworkService {
      * @return The created network.
      */
     public Network createNetwork(final Network network) {
+        network.setIsActivated(false);
         final Network createdNetwork = this.networkRepository.save(network);
         log.info("createNetwork() Network created with Id: {}, Name: {}, Location: {}. ", createdNetwork.getId(),
                 createdNetwork.getName(),
@@ -100,6 +102,13 @@ public class NetworkService {
      * @param id The ID of the network to delete.
      */
     public void deleteNetworkById(final Long id) {
+        final Optional<Network> networkOptional = this.networkRepository.findById(id);
+
+        if (networkOptional.isEmpty()) {
+            log.info("deleteNetworkById() Network with Id: {} not found.", id);
+            throw new NoSuchElementException();
+        }
+
         log.info("deleteNetworkById() Deleting Network with Id: {}.", id);
         this.networkRepository.deleteById(id);
     }
