@@ -1,5 +1,7 @@
 package com.tus.trafficsimulator.persistence.entities;
 
+import com.tus.trafficsimulator.persistence.enums.NetworkStatus;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -29,7 +31,7 @@ import lombok.Setter;
  * <li>{@code id} - Unique identifier for the network.</li>
  * <li>{@code name} - Name of the network.</li>
  * <li>{@code location} - Location of the network.</li>
- * <li>{@code isActivated} - Activation status of the network.</li>
+ * <li>{@code status} - Status of the network.</li>
  * </ul>
  */
 @Entity
@@ -51,5 +53,5 @@ public class Network {
     private String location;
 
     @NotNull
-    private Boolean isActivated;
+    private NetworkStatus status;
 }

@@ -1,6 +1,7 @@
 package com.tus.trafficsimulator.persistence.repositories;
 
 import com.tus.trafficsimulator.persistence.entities.Network;
+import com.tus.trafficsimulator.persistence.enums.NetworkStatus;
 
 import java.util.List;
 
@@ -31,10 +32,10 @@ public interface NetworkRepository extends JpaRepository<Network, Long> {
     List<Network> findByLocation(final String location);
 
     /**
-     * Find network by isActivated.
+     * Find network by status.
      *
-     * @param isActivated isActivated of the network
-     * @return list of networks with the given isActivated
+     * @param status status of the network
+     * @return list of networks with the given status
      */
-    List<Network> findByIsActivated(final Boolean isActivated);
+    List<Network> findByStatus(final NetworkStatus status);
 }
