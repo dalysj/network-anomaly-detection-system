@@ -1,6 +1,7 @@
 package com.tus.trafficsimulator.services;
 
 import com.tus.trafficsimulator.persistence.entities.Network;
+import com.tus.trafficsimulator.persistence.enums.NetworkStatus;
 import com.tus.trafficsimulator.persistence.repositories.NetworkRepository;
 
 import java.util.List;
@@ -41,7 +42,9 @@ public class NetworkService {
      * @return The created network.
      */
     public Network createNetwork(final Network network) {
-        network.setIsActivated(false);
+        this.validateNetworkForCreate(network);
+        network.setStatus(NetworkStatus.DEACTIVATED);
+
         final Network createdNetwork = this.networkRepository.save(network);
         log.info("createNetwork() Network created with Id: {}, Name: {}, Location: {}. ", createdNetwork.getId(),
                 createdNetwork.getName(),
@@ -86,9 +89,18 @@ public class NetworkService {
         }
 
         final Network existingNetwork = networkOptional.get();
-        existingNetwork.setName(network.getName());
-        existingNetwork.setLocation(network.getLocation());
-        existingNetwork.setIsActivated(network.getIsActivated());
+
+        if (network.getName() != null && !network.getName().isEmpty()) {
+            existingNetwork.setName(network.getName());
+        }
+
+        if (network.getLocation() != null && !network.getLocation().isEmpty()) {
+            existingNetwork.setLocation(network.getLocation());
+        }
+
+        if (network.getStatus() != null) {
+            existingNetwork.setStatus(network.getStatus());
+        }
 
         final Network updatedNetwork = this.networkRepository.save(existingNetwork);
         log.info("updateNetwork() Network updated with Id: {}, Name: {}, Location: {}. ", updatedNetwork.getId(),
@@ -119,5 +131,15 @@ public class NetworkService {
     public void deleteAllNetworks() {
         log.info("deleteAllNetworks() Deleting all Networks.");
         this.networkRepository.deleteAll();
+    }
+
+    private void validateNetworkForCreate(final Network network) {
+        if (network.getName() == null || network.getName().isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+
+        if (network.getLocation() == null || network.getLocation().isEmpty()) {
+            throw new IllegalArgumentException();
+        }
     }
 }
