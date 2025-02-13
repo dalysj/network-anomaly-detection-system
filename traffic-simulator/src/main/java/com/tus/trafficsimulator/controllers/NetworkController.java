@@ -1,18 +1,15 @@
 package com.tus.trafficsimulator.controllers;
 
-import com.tus.trafficsimulator.exceptions.TrafficSimulatorError;
-import com.tus.trafficsimulator.models.ProblemDetails;
+import com.tus.trafficsimulator.models.ActivationManagementRequest;
 import com.tus.trafficsimulator.persistence.entities.Network;
 import com.tus.trafficsimulator.services.NetworkService;
 import com.tus.trafficsimulator.utils.TrafficSimulatorConstants;
 
 import java.net.URI;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -57,29 +54,10 @@ public class NetworkController {
      * @return The network with the provided ID.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<?> getNetworkById(@PathVariable final Long id) {
-        try {
-            log.info("getNetworkById() Retrieving Network with Id: {}.", id);
-            final Network network = this.networkService.getNetworkById(id);
-
-            return ResponseEntity.ok(network);
-        } catch (final NoSuchElementException noSuchElementException) {
-            log.error("getNetworkById() Network with Id: {} not found.", id);
-            final ProblemDetails problemDetails = this.createProblemDetails(
-                    TrafficSimulatorError.NETWORK_NOT_FOUND_ERROR.getTitle(),
-                    404,
-                    TrafficSimulatorError.NETWORK_NOT_FOUND_ERROR.getDetail());
-
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(problemDetails);
-        } catch (final Exception exception) {
-            log.error("getNetworkById() Error retrieving Network with Id: {}.", id, exception);
-            final ProblemDetails problemDetails = this.createProblemDetails(
-                    TrafficSimulatorError.GET_NETWORK_ERROR.getTitle(),
-                    500,
-                    TrafficSimulatorError.GET_NETWORK_ERROR.getDetail());
-
-            return ResponseEntity.internalServerError().body(problemDetails);
-        }
+    public ResponseEntity<Network> getNetworkById(@PathVariable final Long id) {
+        log.info("getNetworkById() Retrieving network with ID: {}.", id);
+        final Network network = this.networkService.getNetworkById(id);
+        return ResponseEntity.ok(network);
     }
 
     /**
@@ -88,21 +66,10 @@ public class NetworkController {
      * @return A list of all networks.
      */
     @GetMapping
-    public ResponseEntity<?> getNetworks() {
-        try {
-            log.info("getNetworks() Retrieving all Networks.");
-            final List<Network> networks = this.networkService.getAllNetworks();
-
-            return ResponseEntity.ok(networks);
-        } catch (final Exception exception) {
-            log.error("getNetworks() Error retrieving all Networks.", exception);
-            final ProblemDetails problemDetails = this.createProblemDetails(
-                    TrafficSimulatorError.GET_NETWORKS_ERROR.getTitle(),
-                    500,
-                    TrafficSimulatorError.GET_NETWORKS_ERROR.getDetail());
-
-            return ResponseEntity.internalServerError().body(problemDetails);
-        }
+    public ResponseEntity<List<Network>> getNetworks() {
+        log.info("getNetworks() Retrieving all networks.");
+        final List<Network> networks = this.networkService.getAllNetworks();
+        return ResponseEntity.ok(networks);
     }
 
     /**
@@ -112,65 +79,29 @@ public class NetworkController {
      * @return The created network.
      */
     @PostMapping
-    public ResponseEntity<?> createNetwork(@RequestBody final Network network) {
-        try {
-            log.info("createNetwork() Creating Network with Name: {}, Location: {}.", network.getName(),
-                    network.getLocation());
-            final Network createdNetwork = this.networkService.createNetwork(network);
-
-            final URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-                    .path("/{id}")
-                    .buildAndExpand(createdNetwork.getId())
-                    .toUri();
-
-            return ResponseEntity.created(location).body(createdNetwork);
-        } catch (final Exception exception) {
-            log.error("createNetwork() Error creating Network with Name: {}, Location: {}.", network.getName(),
-                    network.getLocation(), exception);
-            final ProblemDetails problemDetails = this.createProblemDetails(
-                    TrafficSimulatorError.CREATE_NETWORK_ERROR.getTitle(),
-                    400,
-                    TrafficSimulatorError.CREATE_NETWORK_ERROR.getDetail());
-
-            return ResponseEntity.badRequest().body(problemDetails);
-        }
+    public ResponseEntity<Network> createNetwork(@RequestBody final Network network) {
+        log.info("createNetwork() Creating network.");
+        final Network createdNetwork = this.networkService.createNetwork(network);
+        final URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(createdNetwork.getId())
+                .toUri();
+        return ResponseEntity.created(location).body(createdNetwork);
     }
 
     /**
-     * Updates a network with the provided network details.
+     * Updates the status of a network by its ID.
      * 
-     * @param id      The ID of the network to update.
-     * @param network The network details to update.
+     * @param id                          The ID of the network to update.
+     * @param activationManagementRequest The request to update the network status.
      * @return The updated network.
      */
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateNetwork(@PathVariable final Long id, @RequestBody final Network network) {
-        int status;
-        try {
-            log.info("updateNetwork() Checking if Network with Id: {} exists.", id);
-            this.networkService.getNetworkById(id);
-            status = 200;
-        } catch (final NoSuchElementException noSuchElementException) {
-            log.info("updateNetwork() Network with Id: {} not found. Creating a new Network.", id);
-            status = 201;
-        }
-
-        try {
-            log.info("updateNetwork() Updating Network with Id: {}, Name: {}, Location: {}.", id, network.getName(),
-                    network.getLocation());
-            final Network updatedNetwork = this.networkService.updateNetwork(id, network);
-
-            return ResponseEntity.status(status).body(updatedNetwork);
-        } catch (final Exception exception) {
-            log.error("updateNetwork() Error updating Network with Id: {}, Name: {}, Location: {}.", id,
-                    network.getName(), network.getLocation(), exception);
-            final ProblemDetails problemDetails = this.createProblemDetails(
-                    TrafficSimulatorError.UPDATE_NETWORK_ERROR.getTitle(),
-                    500,
-                    TrafficSimulatorError.UPDATE_NETWORK_ERROR.getDetail());
-
-            return ResponseEntity.internalServerError().body(problemDetails);
-        }
+    @PutMapping("/activation-management/{id}")
+    public ResponseEntity<Network> updateNetworkStatus(@PathVariable final Long id,
+            @RequestBody final ActivationManagementRequest activationManagementRequest) {
+        log.info("updateNetworkStatus() Updating status of network with ID: {}.", id);
+        final Network updatedNetwork = this.networkService.updateNetworkStatus(id, activationManagementRequest);
+        return ResponseEntity.ok(updatedNetwork);
     }
 
     /**
@@ -180,29 +111,10 @@ public class NetworkController {
      * @return A response entity with no content.
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteNetworkById(@PathVariable final Long id) {
-        try {
-            log.info("deleteNetworkById() Deleting Network with Id: {}.", id);
-            this.networkService.deleteNetworkById(id);
-
-            return ResponseEntity.noContent().build();
-        } catch (final NoSuchElementException noSuchElementException) {
-            log.error("deleteNetworkById() Network with Id: {} not found.", id);
-            final ProblemDetails problemDetails = this.createProblemDetails(
-                    TrafficSimulatorError.NETWORK_NOT_FOUND_ERROR.getTitle(),
-                    404,
-                    TrafficSimulatorError.NETWORK_NOT_FOUND_ERROR.getDetail());
-
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(problemDetails);
-        } catch (final Exception exception) {
-            log.error("deleteNetworkById() Error deleting Network with Id: {}.", id, exception);
-            final ProblemDetails problemDetails = this.createProblemDetails(
-                    TrafficSimulatorError.DELETE_NETWORK_ERROR.getTitle(),
-                    500,
-                    TrafficSimulatorError.DELETE_NETWORK_ERROR.getDetail());
-
-            return ResponseEntity.internalServerError().body(problemDetails);
-        }
+    public ResponseEntity<Void> deleteNetworkById(@PathVariable final Long id) {
+        log.info("deleteNetworkById() Deleting network with ID: {}.", id);
+        this.networkService.deleteNetworkById(id);
+        return ResponseEntity.noContent().build();
     }
 
     /**
@@ -211,28 +123,9 @@ public class NetworkController {
      * @return A response entity with no content.
      */
     @DeleteMapping
-    public ResponseEntity<?> deleteNetworks() {
-        try {
-            log.info("deleteNetworks() Deleting all Networks.");
-            this.networkService.deleteAllNetworks();
-
-            return ResponseEntity.noContent().build();
-        } catch (final Exception exception) {
-            log.error("deleteNetworks() Error deleting all Networks.", exception);
-            final ProblemDetails problemDetails = this.createProblemDetails(
-                    TrafficSimulatorError.DELETE_NETWORKS_ERROR.getTitle(),
-                    500,
-                    TrafficSimulatorError.DELETE_NETWORKS_ERROR.getDetail());
-
-            return ResponseEntity.internalServerError().body(problemDetails);
-        }
-    }
-
-    private ProblemDetails createProblemDetails(final String title, final int status, final String detail) {
-        return ProblemDetails.builder()
-                .title(title)
-                .status(status)
-                .detail(detail)
-                .build();
+    public ResponseEntity<Void> deleteNetworks() {
+        log.info("deleteNetworks() Deleting all networks.");
+        this.networkService.deleteAllNetworks();
+        return ResponseEntity.noContent().build();
     }
 }

@@ -1,9 +1,6 @@
 package com.tus.trafficsimulator.persistence.repositories;
 
 import com.tus.trafficsimulator.persistence.entities.Network;
-import com.tus.trafficsimulator.persistence.enums.NetworkStatus;
-
-import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -14,28 +11,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface NetworkRepository extends JpaRepository<Network, Long> {
-
-    /**
-     * Find network by name.
-     *
-     * @param name name of the network
-     * @return list of networks with the given name
-     */
-    List<Network> findByName(final String name);
-
-    /**
-     * Find network by location.
-     *
-     * @param location location of the network
-     * @return list of networks with the given location
-     */
-    List<Network> findByLocation(final String location);
-
-    /**
-     * Find network by status.
-     *
-     * @param status status of the network
-     * @return list of networks with the given status
-     */
-    List<Network> findByStatus(final NetworkStatus status);
+    // No implementation.
 }
