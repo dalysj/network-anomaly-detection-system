@@ -27,7 +27,6 @@ import lombok.Setter;
  * <li>{@code networkId} - Unique identifier for the network.</li>
  * <li>{@code sizeInBytes} - Size of the network message in bytes.</li>
  * <li>{@code timestamp} - Timestamp of the network message.</li>
- * <li>{@code isAnomaly} - Anomaly status of the network message.</li>
  * </ul>
  */
 @Getter
@@ -44,6 +43,4 @@ public class NetworkMessage {
     private double sizeInBytes;
 
     private Instant timestamp;
-
-    private boolean isAnomaly;
 }

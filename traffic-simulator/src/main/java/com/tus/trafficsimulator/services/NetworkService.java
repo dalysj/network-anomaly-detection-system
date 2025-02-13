@@ -7,6 +7,7 @@ import com.tus.trafficsimulator.models.enums.ActivationAction;
 import com.tus.trafficsimulator.persistence.entities.Network;
 import com.tus.trafficsimulator.persistence.enums.NetworkStatus;
 import com.tus.trafficsimulator.persistence.repositories.NetworkRepository;
+import com.tus.trafficsimulator.persistence.repositories.NetworkSimulationRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,13 +31,20 @@ public class NetworkService {
 
     private final NetworkRepository networkRepository;
 
+    private final NetworkSimulationRepository networkSimulationRepository;
+
     /**
-     * Constructs a new NetworkService with the provided NetworkRepository.
+     * Constructs a new NetworkService with the provided network repository and
+     * network simulation repository.
      * 
-     * @param networkRepository The repository to use for network operations.
+     * @param networkRepository           The repository for network entities.
+     * @param networkSimulationRepository The repository for network simulation
+     *                                    entities.
      */
-    public NetworkService(final NetworkRepository networkRepository) {
+    public NetworkService(final NetworkRepository networkRepository,
+            final NetworkSimulationRepository networkSimulationRepository) {
         this.networkRepository = networkRepository;
+        this.networkSimulationRepository = networkSimulationRepository;
     }
 
     /**
@@ -97,6 +105,7 @@ public class NetworkService {
             network.setStatus(NetworkStatus.DEACTIVATED);
 
             final Network createdNetwork = this.networkRepository.save(network);
+            this.networkSimulationRepository.save(createdNetwork);
             log.info("createNetwork() Network created with ID: {}, name: {}, location: {}. ", createdNetwork.getId(),
                     createdNetwork.getName(),
                     createdNetwork.getLocation());
@@ -166,6 +175,7 @@ public class NetworkService {
 
         try {
             final Network updatedNetwork = this.networkRepository.save(existingNetwork);
+            this.networkSimulationRepository.save(updatedNetwork);
             log.info("updateNetworkStatus() Network updated with ID: {}, status: {}. ", updatedNetwork.getId(),
                     updatedNetwork.getStatus());
             return updatedNetwork;
@@ -207,26 +217,13 @@ public class NetworkService {
         try {
             log.info("deleteNetworkById() Deleting network with ID: {}.", id);
             this.networkRepository.deleteById(id);
+            this.networkSimulationRepository.deleteByNetworkId(id);
         } catch (final Exception exception) {
             log.error("deleteNetworkById() An error occurred while deleting the network with ID: {}. Exception: {}", id,
                     exception);
             final String[] errorDetailArgs = { id.toString() };
             throw new TrafficSimulatorException(HttpStatus.INTERNAL_SERVER_ERROR,
                     TrafficSimulatorError.DELETE_NETWORK_ERROR, errorDetailArgs);
-        }
-    }
-
-    /**
-     * Deletes all networks.
-     */
-    public void deleteAllNetworks() {
-        log.info("deleteAllNetworks() Deleting all networks.");
-        try {
-            this.networkRepository.deleteAll();
-        } catch (final Exception exception) {
-            log.error("deleteAllNetworks() An error occurred while deleting the networks. Exception: {}", exception);
-            throw new TrafficSimulatorException(HttpStatus.INTERNAL_SERVER_ERROR,
-                    TrafficSimulatorError.DELETE_NETWORKS_ERROR);
         }
     }
 

@@ -116,16 +116,4 @@ public class NetworkController {
         this.networkService.deleteNetworkById(id);
         return ResponseEntity.noContent().build();
     }
-
-    /**
-     * Deletes all networks.
-     * 
-     * @return A response entity with no content.
-     */
-    @DeleteMapping
-    public ResponseEntity<Void> deleteNetworks() {
-        log.info("deleteNetworks() Deleting all networks.");
-        this.networkService.deleteAllNetworks();
-        return ResponseEntity.noContent().build();
-    }
 }
