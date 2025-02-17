@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
+import jakarta.annotation.PostConstruct;
+
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Repository;
@@ -18,14 +20,18 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class NetworkSimulationRepository {
 
+    private final NetworkRepository networkRepository;
+
     private final Map<Long, NetworkSimulation> networkSimulations;
 
     /**
-     * Creates a new instance of {@link NetworkSimulationRepository}.
+     * Constructs a new network simulation repository.
+     * 
+     * @param networkRepository The network repository.
      */
-    public NetworkSimulationRepository() {
+    public NetworkSimulationRepository(final NetworkRepository networkRepository) {
+        this.networkRepository = networkRepository;
         this.networkSimulations = new ConcurrentHashMap<>();
-        log.info("NetworkSimulationRepository() NetworkSimulationRepository initialized.");
     }
 
     /**
@@ -78,5 +84,14 @@ public class NetworkSimulationRepository {
         log.info("deleteByNetworkId() Deleting network simulation with network ID: {}.", networkId);
         networkSimulationOptional.get().stop();
         this.networkSimulations.remove(networkId);
+    }
+
+    @PostConstruct
+    private void init() {
+        log.info("init() Initializing network simulations.");
+        this.networkRepository.findAll().forEach(network -> {
+            this.save(network);
+        });
+        log.info("init() Network simulations initialized.");
     }
 }

@@ -10,4 +10,8 @@ public class TrafficSimulatorConstants {
     }
 
     public static final String NETWORK_CONTROLLER_URL = "/v1/networks";
+
+    public static final String TRAFFIC_SIMULATOR_SCHEMA = "traffic_simulator";
+
+    public static final String NETWORKS_TABLE = "networks";
 }

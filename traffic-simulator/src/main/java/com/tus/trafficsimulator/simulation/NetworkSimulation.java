@@ -60,8 +60,8 @@ public class NetworkSimulation {
         this.scheduledExecutorService.scheduleAtFixedRate(() -> {
             if (this.network.getStatus() == NetworkStatus.ACTIVATED) {
                 final NetworkMessage networkMessage = this.generateNetworkMessage();
-
-                log.info("start() Generated network message: {}", networkMessage);
+                log.info("start() Network with ID: {} generated network message: {}", this.network.getId(),
+                        networkMessage);
             }
         }, INITAL_DELAY, RANDOM.nextInt(MIN_PERIOD, MAX_PERIOD + 1), TimeUnit.SECONDS);
     }
