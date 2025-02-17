@@ -43,4 +43,15 @@ public class NetworkMessage {
     private double sizeInBytes;
 
     private Instant timestamp;
+
+    /**
+     * Returns a string representation of the network message.
+     * 
+     * @return String representation of the network message.
+     */
+    @Override
+    public String toString() {
+        return String.format("NetworkMessage{id=%s, networkId=%d, sizeInBytes=%.2f, timestamp=%s}", id, networkId,
+                sizeInBytes, timestamp);
+    }
 }

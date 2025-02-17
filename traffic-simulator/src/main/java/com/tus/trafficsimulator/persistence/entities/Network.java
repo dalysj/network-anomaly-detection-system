@@ -1,45 +1,25 @@
 package com.tus.trafficsimulator.persistence.entities;
 
 import com.tus.trafficsimulator.persistence.enums.NetworkStatus;
+import com.tus.trafficsimulator.utils.TrafficSimulatorConstants;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
 
 /**
- * Represents a network entity with an ID, name, location, and activation
- * status.
- * 
- * <p>
- * This class uses Lombok annotations to generate boilerplate code such as
- * getters, setters,
- * constructors, and a builder pattern implementation.
- * </p>
- * 
- * <p>
- * Fields:
- * </p>
- * <ul>
- * <li>{@code id} - Unique identifier for the network.</li>
- * <li>{@code name} - Name of the network.</li>
- * <li>{@code location} - Location of the network.</li>
- * <li>{@code status} - Status of the network.</li>
- * </ul>
+ * Represents a network in the Traffic Simulator application.
  */
 @Entity
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
+@Table(name = TrafficSimulatorConstants.NETWORKS_TABLE, schema = TrafficSimulatorConstants.TRAFFIC_SIMULATOR_SCHEMA)
+@Data
 public class Network {
 
     @Id
@@ -53,5 +33,6 @@ public class Network {
     private String location;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     private NetworkStatus status;
 }
