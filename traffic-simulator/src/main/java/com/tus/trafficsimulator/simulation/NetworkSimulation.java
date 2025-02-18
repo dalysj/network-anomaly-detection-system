@@ -3,6 +3,7 @@ package com.tus.trafficsimulator.simulation;
 import com.tus.trafficsimulator.models.NetworkMessage;
 import com.tus.trafficsimulator.persistence.entities.Network;
 import com.tus.trafficsimulator.persistence.enums.NetworkStatus;
+import com.tus.trafficsimulator.services.KafkaProducerService;
 
 import java.time.Instant;
 import java.util.Random;
@@ -27,29 +28,34 @@ public class NetworkSimulation {
 
     private static final Random RANDOM = new Random();
 
-    private final static int INITAL_DELAY = 2;
+    private static final int INITAL_DELAY = 2;
 
-    private final static int MIN_PERIOD = 2;
+    private static final int MIN_PERIOD = 2;
 
-    private final static int MAX_PERIOD = 5;
+    private static final int MAX_PERIOD = 5;
 
-    private final static int MIN_BYTES = 100;
+    private static final int MIN_BYTES = 100;
 
-    private final static int MAX_BYTES = 1000;
+    private static final int MAX_BYTES = 1000;
 
     @Getter
     private final Network network;
 
+    private final KafkaProducerService kafkaProducerService;
+
     private final ScheduledExecutorService scheduledExecutorService;
 
     /**
-     * Creates a new instance of {@link NetworkSimulation} with the specified
-     * {@link Network}.
+     * Constructs a new NetworkSimulation instance.
      * 
-     * @param network The network to simulate.
+     * @param network              the network entity for which the simulation is
+     *                             being created.
+     * @param kafkaProducerService the Kafka producer service used to send network
+     *                             messages.
      */
-    public NetworkSimulation(final Network network) {
+    public NetworkSimulation(final Network network, final KafkaProducerService kafkaProducerService) {
         this.network = network;
+        this.kafkaProducerService = kafkaProducerService;
         this.scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
     }
 
@@ -62,6 +68,7 @@ public class NetworkSimulation {
                 final NetworkMessage networkMessage = this.generateNetworkMessage();
                 log.info("start() Network with ID: {} generated network message: {}", this.network.getId(),
                         networkMessage);
+                this.kafkaProducerService.sendMessage(networkMessage.toString());
             }
         }, INITAL_DELAY, RANDOM.nextInt(MIN_PERIOD, MAX_PERIOD + 1), TimeUnit.SECONDS);
     }

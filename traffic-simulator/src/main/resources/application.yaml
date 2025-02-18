@@ -3,6 +3,8 @@ server:
 spring:
     application:
         name: traffic-simulator
+    kafka:
+        bootstrap-servers: localhost:9092
     datasource:
         url: jdbc:h2:file:./data/traffic-simulator
         driver-class-name: org.h2.Driver
