@@ -14,4 +14,6 @@ public class TrafficSimulatorConstants {
     public static final String TRAFFIC_SIMULATOR_SCHEMA = "traffic_simulator";
 
     public static final String NETWORKS_TABLE = "networks";
+
+    public static final String NETWORK_MESSAGES_TOPIC = "network-messages";
 }

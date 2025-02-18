@@ -1,6 +1,7 @@
 package com.tus.trafficsimulator.persistence.repositories;
 
 import com.tus.trafficsimulator.persistence.entities.Network;
+import com.tus.trafficsimulator.services.KafkaProducerService;
 import com.tus.trafficsimulator.simulation.NetworkSimulation;
 
 import java.util.Map;
@@ -22,15 +23,20 @@ public class NetworkSimulationRepository {
 
     private final NetworkRepository networkRepository;
 
+    private final KafkaProducerService kafkaProducerService;
+
     private final Map<Long, NetworkSimulation> networkSimulations;
 
     /**
      * Constructs a new network simulation repository.
      * 
-     * @param networkRepository The network repository.
+     * @param networkRepository    The network repository.
+     * @param kafkaProducerService The Kafka producer service.
      */
-    public NetworkSimulationRepository(final NetworkRepository networkRepository) {
+    public NetworkSimulationRepository(final NetworkRepository networkRepository,
+            final KafkaProducerService kafkaProducerService) {
         this.networkRepository = networkRepository;
+        this.kafkaProducerService = kafkaProducerService;
         this.networkSimulations = new ConcurrentHashMap<>();
     }
 
@@ -63,7 +69,7 @@ public class NetworkSimulationRepository {
         }
 
         log.info("save() Saving network simulation with network ID: {}.", network.getId());
-        final NetworkSimulation networkSimulation = new NetworkSimulation(network);
+        final NetworkSimulation networkSimulation = new NetworkSimulation(network, this.kafkaProducerService);
         networkSimulation.start();
         this.networkSimulations.put(network.getId(), networkSimulation);
     }
