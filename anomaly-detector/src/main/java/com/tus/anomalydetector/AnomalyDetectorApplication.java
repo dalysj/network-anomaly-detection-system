@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * The AnomalyDetectorApplication class is the main class for the Anomaly
  * Detector application.
  * It is a Spring Boot application, and it uses the @SpringBootApplication
- * annotation to enable auto-configuration and component scanning.
+ * annotation to enable autoconfiguration and component scanning.
  */
 @SpringBootApplication
 public class AnomalyDetectorApplication {

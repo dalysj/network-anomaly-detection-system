@@ -6,5 +6,5 @@ package com.tus.trafficsimulator.persistence.enums;
 public enum NetworkStatus {
 
     ACTIVATED,
-    DEACTIVATED;
+    DEACTIVATED
 }

@@ -1,4 +1,4 @@
-package com.tus.trafficsimulator.models;
+package com.tus.anomalydetector.models;
 
 import java.time.Instant;
 import java.util.UUID;
