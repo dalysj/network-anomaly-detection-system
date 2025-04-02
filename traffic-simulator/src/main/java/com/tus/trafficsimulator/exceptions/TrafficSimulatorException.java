@@ -1,6 +1,6 @@
 package com.tus.trafficsimulator.exceptions;
 
-import com.tus.trafficsimulator.exceptions.enums.TrafficSimulatorError;
+import java.io.Serial;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import org.springframework.http.HttpStatus;
+
+import com.tus.trafficsimulator.exceptions.enums.TrafficSimulatorError;
 
 /**
  * Represents an exception that occurred in the Traffic Simulator application.
@@ -20,6 +22,7 @@ import org.springframework.http.HttpStatus;
 @Builder
 public class TrafficSimulatorException extends RuntimeException {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private HttpStatus httpStatus;
@@ -31,11 +34,9 @@ public class TrafficSimulatorException extends RuntimeException {
     /**
      * Constructs a new TrafficSimulatorException with the provided HTTP status,
      * error, and error detail arguments.
-     * 
+     *
      * @param httpStatus            The HTTP status of the exception.
      * @param trafficSimulatorError The error that occurred.
-     * @param errorDetailArgs       The arguments to use when formatting the error
-     *                              detail.
      */
     public TrafficSimulatorException(final HttpStatus httpStatus, final TrafficSimulatorError trafficSimulatorError) {
         super();

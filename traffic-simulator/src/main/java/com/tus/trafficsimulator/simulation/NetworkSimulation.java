@@ -1,10 +1,5 @@
 package com.tus.trafficsimulator.simulation;
 
-import com.tus.trafficsimulator.models.NetworkMessage;
-import com.tus.trafficsimulator.persistence.entities.Network;
-import com.tus.trafficsimulator.persistence.enums.NetworkStatus;
-import com.tus.trafficsimulator.services.KafkaProducerService;
-
 import java.time.Instant;
 import java.util.Random;
 import java.util.UUID;
@@ -15,10 +10,15 @@ import java.util.concurrent.TimeUnit;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+import com.tus.trafficsimulator.models.NetworkMessage;
+import com.tus.trafficsimulator.persistence.entities.Network;
+import com.tus.trafficsimulator.persistence.enums.NetworkStatus;
+import com.tus.trafficsimulator.services.KafkaProducerService;
+
 /**
  * Represents a network simulation entity that generates network messages for a
  * network.
- * 
+ *
  * <p>
  * This class uses Lombok annotations to generate a logger instance.
  * </p>
@@ -28,7 +28,7 @@ public class NetworkSimulation {
 
     private static final Random RANDOM = new Random();
 
-    private static final int INITAL_DELAY = 2;
+    private static final int INITIAL_DELAY = 2;
 
     private static final int MIN_PERIOD = 2;
 
@@ -47,7 +47,7 @@ public class NetworkSimulation {
 
     /**
      * Constructs a new NetworkSimulation instance.
-     * 
+     *
      * @param network              the network entity for which the simulation is
      *                             being created.
      * @param kafkaProducerService the Kafka producer service used to send network
@@ -68,9 +68,9 @@ public class NetworkSimulation {
                 final NetworkMessage networkMessage = this.generateNetworkMessage();
                 log.info("start() Network with ID: {} generated network message: {}", this.network.getId(),
                         networkMessage);
-                this.kafkaProducerService.sendMessage(networkMessage.toString());
+                this.kafkaProducerService.sendMessage(networkMessage);
             }
-        }, INITAL_DELAY, RANDOM.nextInt(MIN_PERIOD, MAX_PERIOD + 1), TimeUnit.SECONDS);
+        }, INITIAL_DELAY, RANDOM.nextInt(MIN_PERIOD, MAX_PERIOD + 1), TimeUnit.SECONDS);
     }
 
     /**

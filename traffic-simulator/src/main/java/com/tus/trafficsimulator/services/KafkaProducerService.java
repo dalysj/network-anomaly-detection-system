@@ -1,7 +1,5 @@
 package com.tus.trafficsimulator.services;
 
-import com.tus.trafficsimulator.utils.TrafficSimulatorConstants;
-
 import java.util.concurrent.CompletableFuture;
 
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +8,9 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
 
+import com.tus.trafficsimulator.models.NetworkMessage;
+import com.tus.trafficsimulator.utils.TrafficSimulatorConstants;
+
 /**
  * Sends messages to a Kafka topic.
  */
@@ -17,24 +18,24 @@ import org.springframework.stereotype.Service;
 @Service
 public class KafkaProducerService {
 
-    final KafkaTemplate<String, String> kafkaTemplate;
+    final KafkaTemplate<String, NetworkMessage> kafkaTemplate;
 
     /**
      * Constructs a KafkaProducerService instance.
-     * 
+     *
      * @param kafkaTemplate a KafkaTemplate instance.
      */
-    public KafkaProducerService(final KafkaTemplate<String, String> kafkaTemplate) {
+    public KafkaProducerService(final KafkaTemplate<String, NetworkMessage> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
     }
 
     /**
      * Sends a message to a Kafka topic.
-     * 
+     *
      * @param message the message to send.
      */
-    public void sendMessage(final String message) {
-        final CompletableFuture<SendResult<String, String>> future = kafkaTemplate
+    public void sendMessage(final NetworkMessage message) {
+        final CompletableFuture<SendResult<String, NetworkMessage>> future = kafkaTemplate
                 .send(TrafficSimulatorConstants.NETWORK_MESSAGES_TOPIC, message);
         future.whenComplete((result, exception) -> {
             if (exception == null) {
@@ -42,7 +43,7 @@ public class KafkaProducerService {
                         TrafficSimulatorConstants.NETWORK_MESSAGES_TOPIC, message, result.getRecordMetadata().offset());
             } else {
                 log.error("sendMessage() Error sending message to Kafka topic: {}. Message: {}. Exception: {}.",
-                        TrafficSimulatorConstants.NETWORK_MESSAGES_TOPIC, message, exception);
+                        TrafficSimulatorConstants.NETWORK_MESSAGES_TOPIC, message, exception.getMessage(), exception);
             }
         });
     }

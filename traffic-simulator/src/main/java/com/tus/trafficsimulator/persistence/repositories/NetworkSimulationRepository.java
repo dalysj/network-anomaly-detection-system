@@ -1,9 +1,5 @@
 package com.tus.trafficsimulator.persistence.repositories;
 
-import com.tus.trafficsimulator.persistence.entities.Network;
-import com.tus.trafficsimulator.services.KafkaProducerService;
-import com.tus.trafficsimulator.simulation.NetworkSimulation;
-
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -13,6 +9,10 @@ import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Repository;
+
+import com.tus.trafficsimulator.persistence.entities.Network;
+import com.tus.trafficsimulator.services.KafkaProducerService;
+import com.tus.trafficsimulator.simulation.NetworkSimulation;
 
 /**
  * Represents a repository for network simulations.
@@ -29,12 +29,12 @@ public class NetworkSimulationRepository {
 
     /**
      * Constructs a new network simulation repository.
-     * 
+     *
      * @param networkRepository    The network repository.
      * @param kafkaProducerService The Kafka producer service.
      */
     public NetworkSimulationRepository(final NetworkRepository networkRepository,
-            final KafkaProducerService kafkaProducerService) {
+                                       final KafkaProducerService kafkaProducerService) {
         this.networkRepository = networkRepository;
         this.kafkaProducerService = kafkaProducerService;
         this.networkSimulations = new ConcurrentHashMap<>();
@@ -42,10 +42,10 @@ public class NetworkSimulationRepository {
 
     /**
      * Finds a network simulation by the network ID.
-     * 
+     *
      * @param networkId The network ID.
      * @return An {@link Optional} containing the network simulation if found,
-     *         otherwise an empty {@link Optional}.
+     * otherwise an empty {@link Optional}.
      */
     public Optional<NetworkSimulation> findByNetworkId(final long networkId) {
         log.info("findByNetworkId() Getting network simulation with network ID: {}.", networkId);
@@ -54,7 +54,7 @@ public class NetworkSimulationRepository {
 
     /**
      * Saves a network simulation.
-     * 
+     *
      * @param network The network to save.
      */
     public void save(final Network network) {
@@ -76,7 +76,7 @@ public class NetworkSimulationRepository {
 
     /**
      * Deletes a network simulation by the network ID.
-     * 
+     *
      * @param networkId The network ID.
      */
     public void deleteByNetworkId(final long networkId) {
@@ -95,9 +95,7 @@ public class NetworkSimulationRepository {
     @PostConstruct
     private void init() {
         log.info("init() Initializing network simulations.");
-        this.networkRepository.findAll().forEach(network -> {
-            this.save(network);
-        });
+        this.networkRepository.findAll().forEach(this::save);
         log.info("init() Network simulations initialized.");
     }
 }

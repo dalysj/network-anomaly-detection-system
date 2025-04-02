@@ -7,5 +7,5 @@ CREATE TABLE IF NOT EXISTS traffic_simulator.networks (
     status      VARCHAR(50)     NOT NULL
 );
 
-ALTER TABLE     traffic_simulator.networks 
+ALTER TABLE     traffic_simulator.networks
 ADD CONSTRAINT  check_status CHECK (status IN ('ACTIVATED', 'DEACTIVATED'));

@@ -1,7 +1,5 @@
 package com.tus.trafficsimulator.config;
 
-import com.tus.trafficsimulator.utils.TrafficSimulatorConstants;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,12 +11,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.KafkaAdmin;
 
+import com.tus.trafficsimulator.utils.TrafficSimulatorConstants;
+
 /**
  * Configures Kafka topics and KafkaAdmin.
- * 
+ * <p>
  * Reads the Kafka bootstrap servers address from application properties
  * and uses it to configure the KafkaAdmin bean.
- * 
+ * <p>
  * Defines a Kafka topic named "network-messages" with a single partition
  * and a replication factor of 1.
  */
@@ -30,7 +30,7 @@ public class KafkaTopicConfig {
 
     /**
      * Configures KafkaAdmin bean.
-     * 
+     *
      * @return a KafkaAdmin instance configured with the bootstrap servers address.
      */
     @Bean
@@ -42,9 +42,9 @@ public class KafkaTopicConfig {
 
     /**
      * Defines a Kafka topic named "network-messages".
-     * 
+     *
      * @return a NewTopic instance with a single partition and a replication factor
-     *         of 1.
+     * of 1.
      */
     @Bean
     NewTopic networkMessagesTopic() {

@@ -1,8 +1,5 @@
 package com.tus.trafficsimulator.persistence.entities;
 
-import com.tus.trafficsimulator.persistence.enums.NetworkStatus;
-import com.tus.trafficsimulator.utils.TrafficSimulatorConstants;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -13,6 +10,9 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 
 import lombok.Data;
+
+import com.tus.trafficsimulator.persistence.enums.NetworkStatus;
+import com.tus.trafficsimulator.utils.TrafficSimulatorConstants;
 
 /**
  * Represents a network in the Traffic Simulator application.

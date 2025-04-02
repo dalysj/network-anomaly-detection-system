@@ -1,11 +1,11 @@
 package com.tus.trafficsimulator.exceptions.handlers;
 
-import com.tus.trafficsimulator.exceptions.TrafficSimulatorException;
-import com.tus.trafficsimulator.models.ProblemDetails;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import com.tus.trafficsimulator.exceptions.TrafficSimulatorException;
+import com.tus.trafficsimulator.models.ProblemDetails;
 
 /**
  * Handles exceptions thrown by the Traffic Simulator application.
@@ -15,7 +15,7 @@ public class GlobalTrafficSimulatorExceptionHandler {
 
     /**
      * Handles TrafficSimulatorException exceptions.
-     * 
+     *
      * @param exception The exception to handle.
      * @return A ResponseEntity containing the ProblemDetails.
      */
@@ -38,5 +38,4 @@ public class GlobalTrafficSimulatorExceptionHandler {
         return String.format(exception.getTrafficSimulatorError().getDetail(),
                 (Object[]) exception.getErrorDetailArgs());
     }
-
 }

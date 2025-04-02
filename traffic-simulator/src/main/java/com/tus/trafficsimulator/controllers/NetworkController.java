@@ -1,10 +1,5 @@
 package com.tus.trafficsimulator.controllers;
 
-import com.tus.trafficsimulator.models.ActivationManagementRequest;
-import com.tus.trafficsimulator.persistence.entities.Network;
-import com.tus.trafficsimulator.services.NetworkService;
-import com.tus.trafficsimulator.utils.TrafficSimulatorConstants;
-
 import java.net.URI;
 import java.util.List;
 
@@ -22,10 +17,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.tus.trafficsimulator.models.ActivationManagementRequest;
+import com.tus.trafficsimulator.persistence.entities.Network;
+import com.tus.trafficsimulator.services.NetworkService;
+import com.tus.trafficsimulator.utils.TrafficSimulatorConstants;
+
 /**
  * Provides network services such as creating, retrieving, updating, and
  * deleting networks.
- * 
+ *
  * <p>
  * This class uses Lombok annotations to generate a logger.
  * </p>
@@ -40,7 +40,7 @@ public class NetworkController {
 
     /**
      * Constructs a new NetworkController with the provided NetworkService.
-     * 
+     *
      * @param networkService The service to use for network operations.
      */
     public NetworkController(final NetworkService networkService) {
@@ -49,7 +49,7 @@ public class NetworkController {
 
     /**
      * Retrieves a network by its ID.
-     * 
+     *
      * @param id The ID of the network to retrieve.
      * @return The network with the provided ID.
      */
@@ -62,7 +62,7 @@ public class NetworkController {
 
     /**
      * Retrieves all networks.
-     * 
+     *
      * @return A list of all networks.
      */
     @GetMapping
@@ -74,7 +74,7 @@ public class NetworkController {
 
     /**
      * Creates a new network with the provided network details.
-     * 
+     *
      * @param network The network details to create.
      * @return The created network.
      */
@@ -91,14 +91,14 @@ public class NetworkController {
 
     /**
      * Updates the status of a network by its ID.
-     * 
+     *
      * @param id                          The ID of the network to update.
      * @param activationManagementRequest The request to update the network status.
      * @return The updated network.
      */
     @PutMapping("/activation-management/{id}")
     public ResponseEntity<Network> updateNetworkStatus(@PathVariable final Long id,
-            @RequestBody final ActivationManagementRequest activationManagementRequest) {
+                                                       @RequestBody final ActivationManagementRequest activationManagementRequest) {
         log.info("updateNetworkStatus() Updating status of network with ID: {}.", id);
         final Network updatedNetwork = this.networkService.updateNetworkStatus(id, activationManagementRequest);
         return ResponseEntity.ok(updatedNetwork);
@@ -106,7 +106,7 @@ public class NetworkController {
 
     /**
      * Deletes a network by its ID.
-     * 
+     *
      * @param id The ID of the network to delete.
      * @return A response entity with no content.
      */
