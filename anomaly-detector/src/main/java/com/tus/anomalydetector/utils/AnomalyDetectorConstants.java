@@ -9,5 +9,7 @@ public class AnomalyDetectorConstants {
         // Private constructor to prevent instantiation.
     }
 
-    public static final String NETWORK_MESSAGES_TOPIC = "network-messages";
+    public static final String NETWORK_SUMMARIES_COLLECTION = "network_summaries";
+
+    public static final String NETWORK_ANOMALIES_COLLECTION = "network_anomalies";
 }

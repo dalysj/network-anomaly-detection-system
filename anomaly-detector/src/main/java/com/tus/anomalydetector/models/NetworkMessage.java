@@ -27,6 +27,7 @@ import lombok.Setter;
  * <li>{@code networkId} - Unique identifier for the network.</li>
  * <li>{@code sizeInBytes} - Size of the network message in bytes.</li>
  * <li>{@code timestamp} - Timestamp of the network message.</li>
+ * <li>{@code isAnomaly} - Flag representing if the network message is an anomaly.</li>
  * </ul>
  */
 @Getter
@@ -44,6 +45,8 @@ public class NetworkMessage {
 
     private Instant timestamp;
 
+    private boolean isAnomaly;
+
     /**
      * Returns a string representation of the network message.
      *
@@ -51,7 +54,7 @@ public class NetworkMessage {
      */
     @Override
     public String toString() {
-        return String.format("NetworkMessage{id=%s, networkId=%d, sizeInBytes=%.2f, timestamp=%s}", id, networkId,
-                sizeInBytes, timestamp);
+        return String.format("NetworkMessage{id=%s, networkId=%d, sizeInBytes=%.2f, timestamp=%s, isAnomaly=%s}",
+                this.id, this.networkId, this.sizeInBytes, this.timestamp, this.isAnomaly);
     }
 }

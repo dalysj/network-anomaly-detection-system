@@ -51,7 +51,7 @@ public class NetworkMessage {
      */
     @Override
     public String toString() {
-        return String.format("NetworkMessage{id=%s, networkId=%d, sizeInBytes=%.2f, timestamp=%s}", id, networkId,
-                sizeInBytes, timestamp);
+        return String.format("NetworkMessage{id=%s, networkId=%d, sizeInBytes=%.2f, timestamp=%s}", this.id,
+                this.networkId, this.sizeInBytes, this.timestamp);
     }
 }

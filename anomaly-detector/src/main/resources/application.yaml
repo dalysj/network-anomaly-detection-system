@@ -8,3 +8,11 @@ spring:
       bootstrap-servers: localhost:9092
       num-stream-threads: 2
       replication-factor: 1
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      username: customuser
+      password: Admin123!
+      database: anomaly_detector
+      authentication-database: admin
