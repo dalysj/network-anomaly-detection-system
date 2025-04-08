@@ -23,11 +23,11 @@ import com.tus.trafficsimulator.services.NetworkService;
 import com.tus.trafficsimulator.utils.TrafficSimulatorConstants;
 
 /**
- * Provides network services such as creating, retrieving, updating, and
- * deleting networks.
- *
+ * Controller responsible for handling requests related to network operations,
+ * such as retrieving, creating, updating, and deleting networks.
  * <p>
- * This class uses Lombok annotations to generate a logger.
+ * The controller interacts with the {@link NetworkService} to perform the necessary
+ * actions and returns appropriate HTTP responses.
  * </p>
  */
 @Slf4j
@@ -54,7 +54,7 @@ public class NetworkController {
      * @return The network with the provided ID.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Network> getNetworkById(@PathVariable final Long id) {
+    public ResponseEntity<Network> getNetworkById(@PathVariable final long id) {
         log.info("getNetworkById() Retrieving network with ID: {}.", id);
         final Network network = this.networkService.getNetworkById(id);
         return ResponseEntity.ok(network);
@@ -97,7 +97,7 @@ public class NetworkController {
      * @return The updated network.
      */
     @PutMapping("/activation-management/{id}")
-    public ResponseEntity<Network> updateNetworkStatus(@PathVariable final Long id,
+    public ResponseEntity<Network> updateNetworkStatus(@PathVariable final long id,
                                                        @RequestBody final ActivationManagementRequest activationManagementRequest) {
         log.info("updateNetworkStatus() Updating status of network with ID: {}.", id);
         final Network updatedNetwork = this.networkService.updateNetworkStatus(id, activationManagementRequest);
@@ -111,7 +111,7 @@ public class NetworkController {
      * @return A response entity with no content.
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteNetworkById(@PathVariable final Long id) {
+    public ResponseEntity<Void> deleteNetworkById(@PathVariable final long id) {
         log.info("deleteNetworkById() Deleting network with ID: {}.", id);
         this.networkService.deleteNetworkById(id);
         return ResponseEntity.noContent().build();

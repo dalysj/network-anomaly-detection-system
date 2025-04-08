@@ -53,7 +53,7 @@ public class NetworkService {
      * @param id The ID of the network to retrieve.
      * @return The network with the provided ID.
      */
-    public Network getNetworkById(final Long id) {
+    public Network getNetworkById(final long id) {
         final Optional<Network> networkOptional;
         try {
             networkOptional = this.networkRepository.findById(id);
@@ -61,14 +61,14 @@ public class NetworkService {
             log.error("getNetworkById() An error occurred while getting the network with ID: {}. Exception: {}",
                     id,
                     exception.getMessage(), exception);
-            final String[] errorDetailArgs = {id.toString()};
+            final String[] errorDetailArgs = {String.valueOf(id)};
             throw new TrafficSimulatorException(HttpStatus.INTERNAL_SERVER_ERROR,
                     TrafficSimulatorError.GET_NETWORK_ERROR, errorDetailArgs);
         }
 
         if (networkOptional.isEmpty()) {
             log.error("getNetworkById() Network with ID: {} not found.", id);
-            final String[] errorDetailArgs = {id.toString()};
+            final String[] errorDetailArgs = {String.valueOf(id)};
             throw new TrafficSimulatorException(HttpStatus.NOT_FOUND,
                     TrafficSimulatorError.NETWORK_NOT_FOUND_ERROR,
                     errorDetailArgs);
@@ -125,7 +125,7 @@ public class NetworkService {
      *                                    perform on the network.
      * @return The updated network.
      */
-    public Network updateNetworkStatus(final Long id, final ActivationManagementRequest activationManagementRequest) {
+    public Network updateNetworkStatus(final long id, final ActivationManagementRequest activationManagementRequest) {
         final Optional<Network> networkOptional;
         try {
             networkOptional = this.networkRepository.findById(id);
@@ -133,14 +133,14 @@ public class NetworkService {
             log.error("updateNetworkStatus() An error occurred while getting the network with ID: {}. Exception: {}",
                     id,
                     exception.getMessage(), exception);
-            final String[] errorDetailArgs = {id.toString()};
+            final String[] errorDetailArgs = {String.valueOf(id)};
             throw new TrafficSimulatorException(HttpStatus.INTERNAL_SERVER_ERROR,
                     TrafficSimulatorError.GET_NETWORK_ERROR, errorDetailArgs);
         }
 
         if (networkOptional.isEmpty()) {
             log.error("updateNetworkStatus() Network with ID: {} not found.", id);
-            final String[] errorDetailArgs = {id.toString()};
+            final String[] errorDetailArgs = {String.valueOf(id)};
             throw new TrafficSimulatorException(HttpStatus.NOT_FOUND,
                     TrafficSimulatorError.NETWORK_NOT_FOUND_ERROR,
                     errorDetailArgs);
@@ -154,7 +154,7 @@ public class NetworkService {
         if (existingNetwork.getStatus() == status && status == NetworkStatus.ACTIVATED) {
             log.error("updateNetworkStatus() Network with ID: {} must have status: {} to {} the network.", id,
                     NetworkStatus.DEACTIVATED, ActivationAction.ACTIVATE);
-            final String[] errorDetailArgs = {id.toString(), NetworkStatus.DEACTIVATED.toString(),
+            final String[] errorDetailArgs = {String.valueOf(id), NetworkStatus.DEACTIVATED.toString(),
                     ActivationAction.ACTIVATE.toString()};
             throw new TrafficSimulatorException(HttpStatus.BAD_REQUEST,
                     TrafficSimulatorError.ACTIVATION_MANAGEMENT_ERROR,
@@ -164,7 +164,7 @@ public class NetworkService {
         if (existingNetwork.getStatus() == status) {
             log.error("updateNetworkStatus() Network with ID: {} must have status: {} to {} the network.", id,
                     NetworkStatus.ACTIVATED, ActivationAction.DEACTIVATE);
-            final String[] errorDetailArgs = {id.toString(), NetworkStatus.ACTIVATED.toString(),
+            final String[] errorDetailArgs = {String.valueOf(id), NetworkStatus.ACTIVATED.toString(),
                     ActivationAction.DEACTIVATE.toString()};
             throw new TrafficSimulatorException(HttpStatus.BAD_REQUEST,
                     TrafficSimulatorError.ACTIVATION_MANAGEMENT_ERROR,
@@ -183,7 +183,7 @@ public class NetworkService {
             log.error(
                     "updateNetworkStatus() An error occurred while updating the status of the network with ID: {}. Exception: {}",
                     id, exception.getMessage(), exception);
-            final String[] errorDetailArgs = {id.toString()};
+            final String[] errorDetailArgs = {String.valueOf(id)};
             throw new TrafficSimulatorException(HttpStatus.INTERNAL_SERVER_ERROR,
                     TrafficSimulatorError.UPDATE_NETWORK_STATUS_ERROR, errorDetailArgs);
         }
@@ -194,21 +194,21 @@ public class NetworkService {
      *
      * @param id The ID of the network to delete.
      */
-    public void deleteNetworkById(final Long id) {
+    public void deleteNetworkById(final long id) {
         final Optional<Network> networkOptional;
         try {
             networkOptional = this.networkRepository.findById(id);
         } catch (final Exception exception) {
             log.error("deleteNetworkById() An error occurred while getting the network with ID: {}. Exception: {}", id,
                     exception.getMessage(), exception);
-            final String[] errorDetailArgs = {id.toString()};
+            final String[] errorDetailArgs = {String.valueOf(id)};
             throw new TrafficSimulatorException(HttpStatus.INTERNAL_SERVER_ERROR,
                     TrafficSimulatorError.GET_NETWORK_ERROR, errorDetailArgs);
         }
 
         if (networkOptional.isEmpty()) {
             log.info("deleteNetworkById() Network with ID: {} not found.", id);
-            final String[] errorDetailArgs = {id.toString()};
+            final String[] errorDetailArgs = {String.valueOf(id)};
             throw new TrafficSimulatorException(HttpStatus.NOT_FOUND,
                     TrafficSimulatorError.NETWORK_NOT_FOUND_ERROR,
                     errorDetailArgs);
@@ -221,7 +221,7 @@ public class NetworkService {
         } catch (final Exception exception) {
             log.error("deleteNetworkById() An error occurred while deleting the network with ID: {}. Exception: {}", id,
                     exception.getMessage(), exception);
-            final String[] errorDetailArgs = {id.toString()};
+            final String[] errorDetailArgs = {String.valueOf(id)};
             throw new TrafficSimulatorException(HttpStatus.INTERNAL_SERVER_ERROR,
                     TrafficSimulatorError.DELETE_NETWORK_ERROR, errorDetailArgs);
         }
