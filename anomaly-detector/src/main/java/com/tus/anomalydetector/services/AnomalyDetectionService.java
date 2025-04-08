@@ -18,7 +18,6 @@ import com.tus.anomalydetector.persistence.documents.NetworkAnomaly;
 import com.tus.anomalydetector.persistence.documents.NetworkSummary;
 import com.tus.anomalydetector.persistence.repositories.NetworkAnomalyRepository;
 import com.tus.anomalydetector.persistence.repositories.NetworkStatisticsRepository;
-import com.tus.anomalydetector.persistence.repositories.NetworkSummaryRepository;
 
 /**
  * Service for detecting anomalies by processing incoming network messages
@@ -42,9 +41,9 @@ public class AnomalyDetectionService {
 
     private final KafkaStreamsConfiguration kafkaStreamsConfiguration;
 
-    private final NetworkStatisticsRepository networkStatisticsRepository;
+    private final NetworkSummaryService networkSummaryService;
 
-    private final NetworkSummaryRepository networkSummaryRepository;
+    private final NetworkStatisticsRepository networkStatisticsRepository;
 
     private final NetworkAnomalyRepository networkAnomalyRepository;
 
@@ -52,17 +51,17 @@ public class AnomalyDetectionService {
      * Constructs an {@code AnomalyDetectionService} with the required dependencies.
      *
      * @param kafkaStreamsConfiguration   the configuration for Kafka Streams
+     * @param networkSummaryService       the service to use for network summary operations
      * @param networkStatisticsRepository the repository to store and retrieve network statistics
-     * @param networkSummaryRepository    the repository to store and retrieve network traffic summaries
      * @param networkAnomalyRepository    the repository to store detected network anomalies
      */
     public AnomalyDetectionService(final KafkaStreamsConfiguration kafkaStreamsConfiguration,
+                                   final NetworkSummaryService networkSummaryService,
                                    final NetworkStatisticsRepository networkStatisticsRepository,
-                                   final NetworkSummaryRepository networkSummaryRepository,
                                    final NetworkAnomalyRepository networkAnomalyRepository) {
         this.kafkaStreamsConfiguration = kafkaStreamsConfiguration;
+        this.networkSummaryService = networkSummaryService;
         this.networkStatisticsRepository = networkStatisticsRepository;
-        this.networkSummaryRepository = networkSummaryRepository;
         this.networkAnomalyRepository = networkAnomalyRepository;
     }
 
@@ -106,9 +105,9 @@ public class AnomalyDetectionService {
                     NETWORK_MESSAGES_TOPIC, networkMessage.toString());
             this.networkStatisticsRepository.save(networkMessage);
 
-            final NetworkSummary networkSummary = this.networkSummaryRepository.findByNetworkId(networkMessage.getNetworkId())
-                    .orElse(NetworkSummary.builder().networkId(networkMessage.getNetworkId()).trafficSizeInBytes(0)
-                            .anomalyCount(0).nonAnomalyCount(0).build());
+            final NetworkSummary networkSummary = this.networkSummaryService.getNetworkSummariesByNetworkId(networkMessage.getNetworkId())
+                    .stream().findFirst().orElse(NetworkSummary.builder().networkId(networkMessage.getNetworkId())
+                            .trafficSizeInBytes(0).anomalyCount(0).nonAnomalyCount(0).build());
 
             networkSummary.setTrafficSizeInBytes(networkSummary.getTrafficSizeInBytes() + networkMessage.getSizeInBytes());
             networkSummary.setLastUpdatedAt(Instant.now());
@@ -120,7 +119,7 @@ public class AnomalyDetectionService {
                         NetworkAnomaly.builder().networkId(networkMessage.getNetworkId()).sizeInBytes(networkMessage.getSizeInBytes()).timestamp(networkMessage.getTimestamp()).build()
                 );
                 networkSummary.setAnomalyCount(networkSummary.getAnomalyCount() + 1);
-                this.networkSummaryRepository.save(networkSummary);
+                this.networkSummaryService.saveNetworkSummary(networkSummary);
                 return;
             }
 
@@ -135,12 +134,12 @@ public class AnomalyDetectionService {
                         NetworkAnomaly.builder().networkId(networkMessage.getNetworkId()).sizeInBytes(networkMessage.getSizeInBytes()).timestamp(networkMessage.getTimestamp()).build()
                 );
                 networkSummary.setAnomalyCount(networkSummary.getAnomalyCount() + 1);
-                this.networkSummaryRepository.save(networkSummary);
+                this.networkSummaryService.saveNetworkSummary(networkSummary);
                 return;
             }
 
             networkSummary.setNonAnomalyCount(networkSummary.getNonAnomalyCount() + 1);
-            this.networkSummaryRepository.save(networkSummary);
+            this.networkSummaryService.saveNetworkSummary(networkSummary);
         });
 
         return new KafkaStreams(streamsBuilder.build(), this.kafkaStreamsConfiguration.asProperties());
