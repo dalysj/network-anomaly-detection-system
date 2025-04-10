@@ -14,6 +14,7 @@ import com.tus.trafficsimulator.models.NetworkMessage;
 import com.tus.trafficsimulator.persistence.entities.Network;
 import com.tus.trafficsimulator.persistence.enums.NetworkStatus;
 import com.tus.trafficsimulator.services.KafkaProducerService;
+import com.tus.trafficsimulator.simulation.enums.HealthStatus;
 
 /**
  * Represents a network simulation entity that generates network messages for a
@@ -38,12 +39,16 @@ public class NetworkSimulation {
 
     private static final int MAX_BYTES = 1000;
 
+    private static final int SIZE_BUFFER = 300;
+
     @Getter
     private final Network network;
 
     private final KafkaProducerService kafkaProducerService;
 
     private final ScheduledExecutorService scheduledExecutorService;
+
+    private final HealthStatus healthStatus;
 
     /**
      * Constructs a new NetworkSimulation instance.
@@ -57,6 +62,7 @@ public class NetworkSimulation {
         this.network = network;
         this.kafkaProducerService = kafkaProducerService;
         this.scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+        this.healthStatus = RANDOM.nextInt(10) + 1 < 5 ? HealthStatus.UNHEALTHY : HealthStatus.HEALTHY;
     }
 
     /**
@@ -83,10 +89,16 @@ public class NetworkSimulation {
     }
 
     private NetworkMessage generateNetworkMessage() {
+        double sizeInBytes = RANDOM.nextInt(MIN_BYTES, MAX_BYTES + 1);
+
+        if (healthStatus.equals(HealthStatus.UNHEALTHY)) {
+            sizeInBytes += SIZE_BUFFER;
+        }
+
         return NetworkMessage.builder()
                 .id(UUID.randomUUID())
                 .networkId(this.network.getId())
-                .sizeInBytes(RANDOM.nextInt(MIN_BYTES, MAX_BYTES + 1))
+                .sizeInBytes(sizeInBytes)
                 .timestamp(Instant.now())
                 .build();
     }
