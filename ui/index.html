@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Network Traffic Anomaly Detection System</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="icon" href="images/router_icon.png" type="image/png" sizes="64x64"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3"></script>
+    <script src="js/main.js"></script>
+</head>
+
+<body id="myPage" data-spy="scroll" data-target=".navbar" data-offset="60">
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#myPage">
+                <span class="brand-text">NTADS</span>
+                <i class="fa-solid fa-shield-halved fa-lg" style="color: #d6d6d6;"></i>
+            </a>
+        </div>
+        <div class="collapse navbar-collapse" id="myNavbar">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#about">ABOUT</a></li>
+                <li><a href="#topology">TOPOLOGY</a></li>
+                <li><a href="#anomalies">ANOMALIES</a></li>
+                <li><a href="#proportions">PROPORTIONS</a></li>
+                <li><a href="#trends">TRENDS</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="jumbotron text-center">
+    <h1>Network Traffic Anomaly Detection System</h1>
+    <p>A system to monitor and detect anomalies in mobile
+        network traffic.</p>
+    <form>
+        <div class="input-group">
+            <input type="text" id="search_summary_entry" class="form-control" size="50"
+                   placeholder="Search for a network summary by ID..." required>
+            <div class="input-group-btn">
+                <button id="search_summary_button" type="button" class="btn btn-primary">Search</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div id="about" class="container-fluid">
+    <div class="row">
+        <div class="col-sm-8">
+            <h2>About NTADS</h2>
+            <br>
+            <h4>NTADS is a network traffic anomaly detection system that enables network administrators to monitor,
+                control, and manage anomalies within their networks.</h4>
+            <br>
+        </div>
+        <div class="col-sm-4 d-flex justify-content-center">
+            <img src="images/router_icon.png" class="router-icon" alt="Router icon">
+        </div>
+    </div>
+</div>
+
+<div id="topology" class="table-container container-fluid">
+    <h2>Topology</h2>
+    <div class="row">
+        <div class="col-md-6 col-sm-12">
+            <div id="global-pie-chart-container">
+                <canvas id="global-pie-chart" width="400" height="400"></canvas>
+            </div>
+        </div>
+        <div class="col-md-6 col-sm-12">
+            <div id="global-bar-chart-container">
+                <canvas id="global-bar-chart" width="400" height="400"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-12">
+            <div id="global-line-chart-container">
+                <canvas id="global-line-chart" width="800" height="400"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="anomalies" class="table-container container-fluid bg-grey">
+    <h2>
+        Anomalies
+        <span id="anomalies-refresh" class="glyphicon glyphicon-refresh" style="cursor: pointer;"></span>
+    </h2>
+    <div class="slideanim">
+        <div class="table-flex" id="anomalies_table_container">
+            <table id="anomalies_table_id" class="display text-center">
+                <thead>
+                <tr>
+                    <th>Network ID</th>
+                    <th>Traffic Volume</th>
+                    <th>Timestamp</th>
+                    <th>&nbsp;</th>
+                </tr>
+                </thead>
+                <tbody id="anomalies_table_body">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div id="proportions" class="table-container container-fluid">
+    <h2>Proportions</h2>
+    <div class="slideanim row"></div>
+</div>
+
+<div id="trends" class="table-container container-fluid">
+    <h2>Trends</h2>
+    <div class="slideanim row"></div>
+</div>
+
+<img src="images/background.jpg" class="w3-image w3-greyscale-min" style="width: 100%" alt="Network administrators">
+
+<footer class="container-fluid text-center">
+    <a href="#myPage" title="To Top"> <span class="glyphicon glyphicon-chevron-up"></span>
+    </a>
+    <h4 id="footer_text">&nbsp;</h4>
+</footer>
+
+<div class="modal fade" id="my_modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content modal-container">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title" id="modal_title"></h4>
+            </div>
+            <div class="modal-body" id="modal_contents"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="my_modal_summary" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content modal-container">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title" id="modal_title_summary"></h4>
+            </div>
+            <div class="modal-body" id="modal_contents_summary">
+                <form id="summary_form">
+                    <input id="summary_hidden_id" type="hidden" name="id"/>
+                    <div class="form-group">
+                        <label for="total_traffic_volume_input">Total Traffic Volume</label> <input type="text"
+                                                                                                    class="form-control"
+                                                                                                    name="total_traffic_volume_input"
+                                                                                                    id="total_traffic_volume_input"
+                                                                                                    disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="anomaly_count_input">Anomaly Count</label> <input type="text" class="form-control"
+                                                                                      id="anomaly_count_input"
+                                                                                      name="anomaly_count_input"
+                                                                                      disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="non_anomaly_count_input">Non-Anomaly Count</label> <input type="text"
+                                                                                              class="form-control"
+                                                                                              id="non_anomaly_count_input"
+                                                                                              name="non_anomaly_count_input"
+                                                                                              disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="last_updated_input">Last Updated</label> <input type="text" class="form-control"
+                                                                                    id="last_updated_input"
+                                                                                    name="last_updated_input"
+                                                                                    disabled>
+                    </div>
+                    <br/>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+</html>
