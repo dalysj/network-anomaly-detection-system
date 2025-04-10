@@ -268,7 +268,7 @@ input:checked + .slider:before {
     border-radius: 50%;
 }
 
-#footer_text {
+#footer-text {
     font-family: Montserrat, sans-serif;
     color: #fff;
 }

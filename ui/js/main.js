@@ -13,7 +13,7 @@ $(document).ready(function () {
 // Initialize animations -----------------------------------------------------------------------------------------------
 
     const initAnimations = function () {
-        $(".navbar a, footer a[href='#myPage']").off().on("click", function (event) {
+        $(".navbar a, footer a[href='#page']").off().on("click", function (event) {
             if (this.hash !== "") {
                 event.preventDefault();
                 const hash = this.hash;
@@ -42,7 +42,7 @@ $(document).ready(function () {
 
     const initFooterDate = function () {
         const date = new Date();
-        $("#footer_text").html(`&copy;<br/>TUS<br/>${date.getFullYear()}`);
+        $("#footer-text").html(`&copy;<br/>TUS<br/>${date.getFullYear()}`);
     };
 
     initFooterDate();
@@ -50,57 +50,44 @@ $(document).ready(function () {
 // Search network summary by network ID --------------------------------------------------------------------------------
 
     const getNetworkSummaryByNetworkId = function (networkId) {
-        console.log("[INFO] Fetching network summary for network ID:", networkId);
         $.ajax({
             type: "GET",
             url: `${networkSummariesURL}/network/${networkId}`,
             dataType: "json",
             success: function (data, status, jqXHR) {
-                console.info(`[SUCCESS] Fetched network summary from: ${networkSummariesURL}/${networkId}`);
-                console.debug("[DEBUG] Raw data received:", data);
-
                 if (Array.isArray(data) && data.length > 0) {
                     const networkSummary = data[0];
-                    console.debug("[DEBUG] Network summary extracted:", networkSummary);
                     renderNetworkSummary(networkSummary);
                 } else {
-                    console.warn("[WARN] No network summary data found for network ID:", networkId);
-                    $("#modal_title").text("Search Network Summary Error");
-                    $("#modal_contents").html(`<h5>No network summary available.</h5>`);
-                    $("#my_modal").modal("show");
+                    $("#modal-title").text("Search Network Summary Error");
+                    $("#modal-contents").html(`<h5>No network summary available.</h5>`);
+                    $("#modal").modal("show");
                 }
             },
             error: function (jqXHR, status, error) {
-                console.error(`[ERROR] Failed to fetch network summary for network ID: ${networkId}`, {
-                    status: status,
-                    error: error,
-                    responseText: jqXHR.responseText
-                });
-
-                $("#modal_title").text("Search Network Summary Error");
-                $("#modal_contents").html(`<h5>Network summary not found.</h5>`);
-                $("#my_modal").modal("show");
+                $("#modal-title").text("Search Network Summary Error");
+                $("#modal-contents").html(`<h5>Network summary not found.</h5>`);
+                $("#modal").modal("show");
             }
         });
     };
 
     const renderNetworkSummary = function (networkSummary) {
-        $("#summary_hidden_id").val(networkSummary.id);
-        $("#total_traffic_volume_input").val(networkSummary.trafficSizeInBytes.toFixed(2));
-        $("#anomaly_count_input").val(networkSummary.anomalyCount);
-        $("#non_anomaly_count_input").val(networkSummary.nonAnomalyCount);
-        $("#last_updated_input").val(networkSummary.lastUpdatedAt);
-        $("#modal_title_summary").text(`Summary for Network ${networkSummary.networkId}`);
-        $("#my_modal_summary").modal("show");
+        $("#summary-hidden-id").val(networkSummary.id);
+        $("#total-traffic-volume-input").val(networkSummary.trafficSizeInBytes.toFixed(2));
+        $("#anomaly-count-input").val(networkSummary.anomalyCount);
+        $("#non-anomaly-count-input").val(networkSummary.nonAnomalyCount);
+        $("#last-updated-at-input").val(networkSummary.lastUpdatedAt);
+        $("#modal-title-summary").text(`Summary for Network ${networkSummary.networkId}`);
+        $("#modal-summary").modal("show");
     };
 
-    $("#search_summary_button").off().on("click", function () {
-        const networkIdEntry = $("#search_summary_entry").val().trim();
+    $("#search-summary-button").off().on("click", function () {
+        const networkIdEntry = $("#search-summary-entry").val().trim();
         if (!networkIdEntry || isNaN(networkIdEntry)) {
-            console.warn("[WARN] Invalid network ID entered:", networkIdEntry);
-            $("#modal_title").text("Invalid Network ID");
-            $("#modal_contents").html(`<h5>Please enter a valid numeric network ID.</h5>`);
-            $("#my_modal").modal("show");
+            $("#modal-title").text("Invalid Network ID");
+            $("#modal-contents").html(`<h5>Please enter a valid numeric network ID.</h5>`);
+            $("#modal").modal("show");
         } else {
             getNetworkSummaryByNetworkId(parseInt(networkIdEntry, 10));
         }
@@ -109,7 +96,7 @@ $(document).ready(function () {
 // Network anomalies table ---------------------------------------------------------------------------------------------
 
     const renderNetworkAnomaliesTable = function (networkAnomalies) {
-        const networkAnomaliesTable = $("#anomalies_table_id").DataTable();
+        const networkAnomaliesTable = $("#anomalies-table-id").DataTable();
         networkAnomaliesTable.clear().draw();
         networkAnomaliesTable.search("").draw();
 
@@ -126,40 +113,29 @@ $(document).ready(function () {
     };
 
     const getNetworkAnomaliesAndUpdateTable = function () {
-        console.log("[INFO] Fetching network anomalies");
         $.ajax({
             type: "GET",
             url: `${networkAnomaliesURL}`,
             dataType: "json",
             success: function (data, status, jqXHR) {
-                console.info(`[SUCCESS] Fetched network anomalies from: ${networkAnomaliesURL}`);
-                console.debug("[DEBUG] Raw network anomalies data received:", data);
-
                 if (Array.isArray(data) && data.length > 0) {
                     renderNetworkAnomaliesTable(data);
                 } else {
-                    console.warn("[WARN] No network anomalies data received.");
-                    $("#modal_title").text("Network Anomalies Data Error");
-                    $("#modal_contents").html(`<h5>No network anomalies found.</h5>`);
-                    $("#my_modal").modal("show");
+                    $("#modal-title").text("Network Anomalies Data Error");
+                    $("#modal-contents").html(`<h5>No network anomalies found.</h5>`);
+                    $("#modal").modal("show");
                 }
             },
             error: function (jqXHR, status, error) {
-                console.error(`[ERROR] Failed to fetch network anomalies`, {
-                    status: status,
-                    error: error,
-                    responseText: jqXHR.responseText
-                });
-
-                $("#modal_title").text("Network Anomalies Fetch Error");
-                $("#modal_contents").html(`<h5>Error Status: ${jqXHR.status}</h5>`);
-                $("#my_modal").modal("show");
+                $("#modal-title").text("Network Anomalies Fetch Error");
+                $("#modal-contents").html(`<h5>Error Status: ${jqXHR.status}</h5>`);
+                $("#modal").modal("show");
             }
         });
     };
 
     const initNetworkAnomaliesTable = function () {
-        const networkAnomaliesTable = $("#anomalies_table_id").DataTable();
+        const networkAnomaliesTable = $("#anomalies-table-id").DataTable();
         networkAnomaliesTable.off("click", ".delete-anomaly-button")
             .on("click", ".delete-anomaly-button", function () {
                 const networkAnomalyId = $(this).attr("id");
@@ -177,28 +153,19 @@ $(document).ready(function () {
 // Delete network anomaly ----------------------------------------------------------------------------------------------
 
     const deleteNetworkAnomalyById = function (id) {
-        console.log(`[INFO] Attempting to delete network anomaly with ID: ${id}`);
         $.ajax({
             type: "DELETE",
             url: `${networkAnomaliesURL}/${id}`,
             success: function (data, status, jqXHR) {
-                console.info(`[SUCCESS] Deleted network anomaly with ID: ${id}`);
-                console.debug("[DEBUG] Server response after delete:", data);
-                getNetworkAnomalies();
-                $("#modal_title").text("Delete Network Anomaly Success");
-                $("#modal_contents").html(`<h5>Network anomaly with ID ${id} has been successfully deleted.</h5>`);
-                $("#my_modal").modal("show");
+                getNetworkAnomaliesAndUpdateTable();
+                $("#modal-title").text("Delete Network Anomaly Success");
+                $("#modal-contents").html(`<h5>Network anomaly with ID ${id} has been successfully deleted.</h5>`);
+                $("#modal").modal("show");
             },
             error: function (jqXHR, status, error) {
-                console.error(`[ERROR] Failed to delete network anomaly with ID: ${id}`, {
-                    status: status,
-                    error: error,
-                    responseText: jqXHR.responseText
-                });
-
-                $("#modal_title").text("Delete Error");
-                $("#modal_contents").html(`<h5>Failed to delete network anomaly. Error Status: ${jqXHR.status}</h5>`);
-                $("#my_modal").modal("show");
+                $("#modal-title").text("Delete Error");
+                $("#modal-contents").html(`<h5>Failed to delete network anomaly. Error Status: ${jqXHR.status}</h5>`);
+                $("#modal").modal("show");
             }
         });
     };
@@ -404,15 +371,11 @@ $(document).ready(function () {
 
             const chartElement = document.getElementById(chartId);
 
-            console.info(`[INFO] Fetching network anomalies for network ID: ${networkSummary.networkId}`);
             $.ajax({
                 type: "GET",
                 url: `${networkAnomaliesURL}/network/${networkSummary.networkId}`,
                 dataType: "json",
                 success: function (data, status, jqXHR) {
-                    console.info(`[SUCCESS] Fetched network anomalies for network ID: ${networkSummary.networkId}`);
-                    console.debug("[DEBUG] Raw network anomalies data received:", data);
-
                     const timestamps = data.map(networkAnomaly => networkAnomaly.timestamp);
                     const volumes = data.map(networkAnomaly => networkAnomaly.sizeInBytes);
 
@@ -423,12 +386,10 @@ $(document).ready(function () {
                     };
 
                     if (!networkLineCharts[chartId]) {
-                        console.log(`[INFO] Creating new line chart for chartId: ${chartId}`);
                         networkLineCharts[chartId] = createLineChart(chartElement, trafficVolumeSummary);
                         return;
                     }
 
-                    console.log(`[INFO] Updating existing line chart for chartId: ${chartId}`);
                     const networkLineChart = networkLineCharts[chartId];
                     networkLineChart.data.labels = trafficVolumeSummary.timestamps;
                     networkLineChart.data.datasets[0].data = trafficVolumeSummary.volumes;
@@ -547,64 +508,194 @@ $(document).ready(function () {
 // Update charts -------------------------------------------------------------------------------------------------------
 
     const getNetworkSummariesAndUpdateCharts = function () {
-        console.info("INFO: Fetching network summaries");
         $.ajax({
             type: "GET",
             url: `${networkSummariesURL}`,
             dataType: "json",
             success: function (data, status, jqXHR) {
-                console.info(`INFO: Successfully fetched network summaries from: ${networkSummariesURL}`);
-                console.debug("[DEBUG] Raw network summary data received:", data);
-
                 updateGlobalPieChart(data);
                 updateGlobalBarChart(data);
                 updateNetworkPieCharts(data);
                 updateNetworkLineCharts(data);
             },
             error: function (jqXHR, status, error) {
-                console.error("ERROR: Failed to fetch network summaries.", {
-                    status: status,
-                    error: error,
-                    responseText: jqXHR.responseText
-                });
-
-                $("#modal_title").text("GET Error");
-                $("#modal_contents").html(`<h5>Error Status: ${jqXHR.status}</h5>`);
-                $("#my_modal").modal("show");
+                $("#modal-title").text("GET Error");
+                $("#modal-contents").html(`<h5>Error Status: ${jqXHR.status}</h5>`);
+                $("#modal").modal("show");
             }
         });
     };
 
     getNetworkSummariesAndUpdateCharts();
-    setInterval(getNetworkSummariesAndUpdateCharts, 2000);
+    setInterval(function () {
+        console.info("Polling for network summaries.");
+        getNetworkSummariesAndUpdateCharts();
+    }, 3000);
 
     const getNetworkAnomaliesAndUpdateCharts = function () {
-        console.info("INFO: Fetching network anomalies");
         $.ajax({
             type: "GET",
             url: `${networkAnomaliesURL}`,
             dataType: "json",
             success: function (data, status, jqXHR) {
-                console.info(`INFO: Successfully fetched network anomalies from: ${networkAnomaliesURL}`);
-                console.debug("[DEBUG] Raw network anomalies data received:", data);
                 updateGlobalLineChart(data);
             },
             error: function (jqXHR, status, error) {
-                console.error("ERROR: Failed to fetch network anomalies.", {
-                    status: status,
-                    error: error,
-                    responseText: jqXHR.responseText
-                });
-
-                $("#modal_title").text("GET Error");
-                $("#modal_contents").html(`<h5>Error Status: ${jqXHR.status}</h5>`);
-                $("#my_modal").modal("show");
+                $("#modal-title").text("GET Error");
+                $("#modal-contents").html(`<h5>Error Status: ${jqXHR.status}</h5>`);
+                $("#modal").modal("show");
             }
         });
     }
 
     getNetworkAnomaliesAndUpdateCharts();
-    setInterval(getNetworkAnomaliesAndUpdateCharts, 2000);
+    setInterval(function () {
+        console.info("Polling for network anomalies.");
+        getNetworkAnomaliesAndUpdateCharts();
+    }, 3000);
+
+// Networks table ------------------------------------------------------------------------------------------------------
+
+    const renderNetworksTable = function (networks) {
+        const networksTable = $("#networks-table-id").DataTable();
+        networksTable.clear().draw();
+        networksTable.search("").draw();
+
+        networks.forEach(network => {
+            networksTable.row.add([
+                network.name,
+                network.location,
+                `${network.status === "ACTIVATED" ?
+                    `<button class="deactivate-network-button btn btn-warning" id="${network.id}">Deactivate</button>` :
+                    `<button class="activate-network-button btn btn-success" id="${network.id}">Activate</button>`}`]);
+        });
+
+        networksTable.draw();
+    };
+
+    const getNetworksAndUpdateTable = function () {
+        $.ajax({
+            type: "GET",
+            url: `${networksURL}`,
+            dataType: "json",
+            success: function (data, status, jqXHR) {
+                if (Array.isArray(data) && data.length > 0) {
+                    renderNetworksTable(data);
+                } else {
+                    $("#modal-title").text("Networks Data Error");
+                    $("#modal-contents").html(`<h5>No networks found.</h5>`);
+                    $("#modal").modal("show");
+                }
+            },
+            error: function (jqXHR, status, error) {
+                $("#modal-title").text("Networks Fetch Error");
+                $("#modal-contents").html(`<h5>Error Status: ${jqXHR.status}</h5>`);
+                $("#modal").modal("show");
+            }
+        });
+    };
+
+    const initNetworksTable = function () {
+        const networksTable = $("#networks-table-id").DataTable();
+        networksTable.off("click", ".delete-network-button")
+            .on("click", ".delete-network-button", function () {
+                const networkId = $(this).attr("id");
+                deleteNetworkById(networkId);
+            });
+        networksTable.off("click", ".activate-network-button")
+            .on("click", ".activate-network-button", function () {
+                const networkId = $(this).attr("id");
+                manageNetworkById(networkId, "ACTIVATE");
+            });
+        networksTable.off("click", ".deactivate-network-button")
+            .on("click", ".deactivate-network-button", function () {
+                const networkId = $(this).attr("id");
+                manageNetworkById(networkId, "DEACTIVATE");
+            });
+    };
+
+    initNetworksTable();
+    getNetworksAndUpdateTable();
+
+    const manageNetworkById = function (id, action) {
+        const requestPayload = JSON.stringify({action: action});
+
+        $.ajax({
+            type: "PUT",
+            url: `${networksURL}/activation-management/${id}`,
+            dataType: "json",
+            contentType: "application/json",
+            data: requestPayload,
+            success: function (data, status, jqXHR) {
+                getNetworksAndUpdateTable();
+                $("#modal-title").text("Update Network Success");
+                $("#modal-contents").html(`<h5>Network with ID ${id} has been successfully updated.</h5>`);
+                $("#modal").modal("show");
+            },
+            error: function (jqXHR, status, error) {
+
+                $("#modal-title").text("Delete Error");
+                $("#modal-contents").html(`<h5>Failed to delete network anomaly. Error Status: ${jqXHR.status}</h5>`);
+                $("#modal").modal("show");
+            }
+        });
+    };
+
+// Create network ------------------------------------------------------------------------------------------------------
+
+    const validateStringEntry = function (entry) {
+        if (entry === "") {
+            throw "Form fields cannot be null.";
+        }
+        return entry;
+    };
+
+    const createNetwork = function () {
+        let name;
+        let location;
+
+        try {
+            name = validateStringEntry($("#name-input").val());
+            location = validateStringEntry($("#location-input").val());
+        } catch (error) {
+            $("#modal-title").text("Value Entry Error");
+            $("#modal-contents").html(`<h5>${error}</h5>`);
+            $("#modal").modal("show");
+            return;
+        }
+
+        const requestPayload = JSON.stringify({
+            name: name,
+            location: location
+        });
+
+        $.ajax({
+            type: "POST",
+            url: `${networksURL}`,
+            dataType: "json",
+            contentType: "application/json",
+            data: requestPayload,
+            success: function (data, status, jqXHR) {
+                clearCreateNetworkForm();
+                getNetworksAndUpdateTable();
+                $("#modal-title").text("Create Network Success");
+                $("#modal-contents").html(`<h5>Network with name ${data.name} and ID ${data.id} successfully created.</h5>`);
+                $("#modal").modal("show");
+            },
+            error: function (jqXHR, status, error) {
+                $("#modal-title").text("Create Network Error");
+                $("#modal-contents").html(`<h5>Failed to create network. Error Status: ${jqXHR.status}</h5>`);
+                $("#modal").modal("show");
+            }
+        });
+    };
+
+    const clearCreateNetworkForm = function () {
+        $("#name-input").val("");
+        $("#location-input").val("");
+    };
+
+    $("#create-network-button").off().on("click", createNetwork);
 });
 
 // main.js end ---------------------------------------------------------------------------------------------------------
